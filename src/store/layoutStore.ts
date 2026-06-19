@@ -8,11 +8,20 @@ export interface LayoutItem {
   order: number
 }
 
+export interface LayoutTemplate {
+  id: string
+  name: string
+  description: string
+  layout: LayoutItem[]
+}
+
 interface LayoutState {
   layout: LayoutItem[]
   isEditing: boolean
   isLoading: boolean
   isSaving: boolean
+  templates: LayoutTemplate[]
+  isApplyingTemplate: boolean
   fetchLayout: () => Promise<void>
   saveLayout: () => Promise<void>
   resetLayout: () => Promise<void>
@@ -21,6 +30,8 @@ interface LayoutState {
   setEditing: (value: boolean) => void
   addWidget: (type: WidgetType) => void
   removeWidget: (id: string) => void
+  fetchTemplates: () => Promise<void>
+  applyTemplate: (templateId: string) => Promise<void>
 }
 
 const DEFAULT_LAYOUT: LayoutItem[] = [
@@ -44,6 +55,8 @@ export const useLayoutStore = create<LayoutState>((set, get) => ({
   isEditing: false,
   isLoading: true,
   isSaving: false,
+  templates: [],
+  isApplyingTemplate: false,
 
   fetchLayout: async () => {
     set({ isLoading: true })
@@ -127,5 +140,39 @@ export const useLayoutStore = create<LayoutState>((set, get) => ({
         layout: filtered.map((item, index) => ({ ...item, order: index })),
       }
     })
+  },
+
+  fetchTemplates: async () => {
+    try {
+      const res = await fetch('/api/layout/templates')
+      if (res.ok) {
+        const data = await res.json()
+        set({ templates: data.templates })
+      }
+    } catch {
+    }
+  },
+
+  applyTemplate: async (templateId: string) => {
+    const { templates } = get()
+    const template = templates.find((t) => t.id === templateId)
+    if (!template) return
+    set({ isApplyingTemplate: true })
+    try {
+      const reordered = template.layout.map((item, index) => ({ ...item, order: index }))
+      const res = await fetch('/api/layout', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ layout: reordered }),
+      })
+      if (res.ok) {
+        const data = await res.json()
+        set({ layout: data.layout, isApplyingTemplate: false, isEditing: false })
+      } else {
+        set({ isApplyingTemplate: false })
+      }
+    } catch {
+      set({ isApplyingTemplate: false })
+    }
   },
 }))

@@ -4,11 +4,12 @@ import Toolbar from '@/components/Toolbar'
 import WidgetGrid from '@/components/WidgetGrid'
 
 export default function Home() {
-  const { isLoading, fetchLayout } = useLayoutStore()
+  const { isLoading, fetchLayout, fetchTemplates } = useLayoutStore()
 
   useEffect(() => {
     fetchLayout()
-  }, [fetchLayout])
+    fetchTemplates()
+  }, [fetchLayout, fetchTemplates])
 
   if (isLoading) {
     return (
