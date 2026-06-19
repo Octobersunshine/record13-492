@@ -1,0 +1,10 @@
+{
+  "layout": [
+    { "id": "weather", "type": "weather", "order": 0 },
+    { "id": "todo", "type": "todo", "order": 1 },
+    { "id": "stats", "type": "stats", "order": 2 },
+    { "id": "shortcuts", "type": "shortcuts", "order": 3 },
+    { "id": "calendar", "type": "calendar", "order": 4 },
+    { "id": "notifications", "type": "notifications", "order": 5 }
+  ]
+}
