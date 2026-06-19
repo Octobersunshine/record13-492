@@ -19,16 +19,25 @@ interface LayoutState {
   reorderLayout: (newLayout: LayoutItem[]) => void
   toggleEditing: () => void
   setEditing: (value: boolean) => void
+  addWidget: (type: WidgetType) => void
+  removeWidget: (id: string) => void
 }
 
 const DEFAULT_LAYOUT: LayoutItem[] = [
-  { id: 'weather', type: 'weather', order: 0 },
-  { id: 'todo', type: 'todo', order: 1 },
-  { id: 'stats', type: 'stats', order: 2 },
-  { id: 'shortcuts', type: 'shortcuts', order: 3 },
-  { id: 'calendar', type: 'calendar', order: 4 },
-  { id: 'notifications', type: 'notifications', order: 5 },
+  { id: 'w1_weather', type: 'weather', order: 0 },
+  { id: 'w2_todo', type: 'todo', order: 1 },
+  { id: 'w3_stats', type: 'stats', order: 2 },
+  { id: 'w4_shortcuts', type: 'shortcuts', order: 3 },
+  { id: 'w5_calendar', type: 'calendar', order: 4 },
+  { id: 'w6_notifications', type: 'notifications', order: 5 },
 ]
+
+let idCounter = 1000
+
+const generateId = (type: WidgetType): string => {
+  idCounter += 1
+  return `${type}_${Date.now()}_${idCounter}`
+}
 
 export const useLayoutStore = create<LayoutState>((set, get) => ({
   layout: DEFAULT_LAYOUT,
@@ -97,5 +106,26 @@ export const useLayoutStore = create<LayoutState>((set, get) => ({
 
   setEditing: (value: boolean) => {
     set({ isEditing: value })
+  },
+
+  addWidget: (type: WidgetType) => {
+    set((state) => {
+      const newId = generateId(type)
+      const newItem: LayoutItem = {
+        id: newId,
+        type,
+        order: state.layout.length,
+      }
+      return { layout: [...state.layout, newItem] }
+    })
+  },
+
+  removeWidget: (id: string) => {
+    set((state) => {
+      const filtered = state.layout.filter((item) => item.id !== id)
+      return {
+        layout: filtered.map((item, index) => ({ ...item, order: index })),
+      }
+    })
   },
 }))

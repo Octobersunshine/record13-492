@@ -19,12 +19,12 @@ interface LayoutData {
 
 const defaultLayout: LayoutData = {
   layout: [
-    { id: 'weather', type: 'weather', order: 0 },
-    { id: 'todo', type: 'todo', order: 1 },
-    { id: 'stats', type: 'stats', order: 2 },
-    { id: 'shortcuts', type: 'shortcuts', order: 3 },
-    { id: 'calendar', type: 'calendar', order: 4 },
-    { id: 'notifications', type: 'notifications', order: 5 },
+    { id: 'w1_weather', type: 'weather', order: 0 },
+    { id: 'w2_todo', type: 'todo', order: 1 },
+    { id: 'w3_stats', type: 'stats', order: 2 },
+    { id: 'w4_shortcuts', type: 'shortcuts', order: 3 },
+    { id: 'w5_calendar', type: 'calendar', order: 4 },
+    { id: 'w6_notifications', type: 'notifications', order: 5 },
   ],
 }
 
